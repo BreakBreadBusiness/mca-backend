@@ -1,35 +1,34 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Any
-from openai import OpenAI
+import google.generativeai as genai
 import os
+
+# Set up Gemini API
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+# Create the Gemini model
+model = genai.GenerativeModel("gemini-1.5-pro")
 
 # Initialize FastAPI app
 app = FastAPI()
 
-# Set up OpenAI client
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-# Use GPT-3.5 (low cost, free tier supported)
-DEFAULT_MODEL = "gpt-3.5-turbo"
-
-def get_gpt_response(prompt: str, model: str = DEFAULT_MODEL) -> str:
+# Underwriting helper
+def get_underwriting_response(prompt: str) -> str:
     try:
-        response = client.chat.completions.create(
-            model=model,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.3,
-        )
-        return response.choices[0].message.content.strip()
+        response = model.generate_content(prompt)
+        return response.text.strip()
     except Exception as e:
         return f"Error: {str(e)}"
 
-
-# ========== /analyze-app ==========
-
+# Input schemas
 class ApplicationData(BaseModel):
     data: Any
 
+class BankPreviewData(BaseModel):
+    data: Any
+
+# Endpoint: Analyze Application
 @app.post("/analyze-app")
 def analyze_app(application: ApplicationData):
     prompt = f"""
@@ -45,15 +44,10 @@ Analyze the following application and determine:
 Data:
 {application.data}
     """
-    result = get_gpt_response(prompt)
+    result = get_underwriting_response(prompt)
     return {"underwriting_summary": result}
 
-
-# ========== /analyze-bank ==========
-
-class BankPreviewData(BaseModel):
-    data: Any
-
+# Endpoint: Analyze Bank Statement Preview
 @app.post("/analyze-bank")
 def analyze_bank(bank_data: BankPreviewData):
     prompt = f"""
@@ -69,5 +63,5 @@ Review the following preview of a business bank statement and:
 Data:
 {bank_data.data}
     """
-    result = get_gpt_response(prompt)
+    result = get_underwriting_response(prompt)
     return {"bank_underwriting_summary": result}
