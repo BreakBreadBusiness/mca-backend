@@ -74,3 +74,5 @@ Data:
     """
     result = get_gpt_response(prompt)
     return {"bank_underwriting_summary": result}
+
+
