@@ -4,13 +4,14 @@ from typing import Any
 import openai
 import os
 
-# Create FastAPI app
+# Initialize FastAPI app
 app = FastAPI()
 
-# Set OpenAI key
+# Set OpenAI key from environment
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# ========= GPT ANALYSIS: APPLICATION ==========
+
+# ========== GPT ANALYSIS: APPLICATION ==========
 def analyze_application(data: dict) -> str:
     prompt = f"""
 You are an expert MCA underwriter.
@@ -39,13 +40,14 @@ Data:
 class ApplicationData(BaseModel):
     data: Any
 
+
 @app.post("/analyze-app")
 def analyze_app_endpoint(application: ApplicationData):
     result = analyze_application(application.data)
     return {"underwriting_summary": result}
 
 
-# ========= GPT ANALYSIS: BANK PREVIEW ==========
+# ========== GPT ANALYSIS: BANK PREVIEW ==========
 def analyze_bank_preview(data: dict) -> str:
     prompt = f"""
 You are a financial underwriter.
@@ -73,6 +75,7 @@ Data:
 
 class BankPreviewData(BaseModel):
     data: Any
+
 
 @app.post("/analyze-bank")
 def analyze_bank_endpoint(bank_data: BankPreviewData):
