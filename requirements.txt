@@ -1,3 +1,4 @@
+fastapi
 pdfminer.six==20221105
 openai
 uvicorn
