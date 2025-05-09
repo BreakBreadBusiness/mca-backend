@@ -2,3 +2,4 @@ fastapi
 pdfminer.six==20221105
 openai==0.28
 uvicorn
+
