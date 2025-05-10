@@ -1,6 +1,7 @@
 
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
+router = APIRouter()
 from PyPDF2 import PdfReader
 from collections import defaultdict
 from datetime import datetime
