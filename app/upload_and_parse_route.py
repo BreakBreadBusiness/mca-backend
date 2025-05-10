@@ -89,6 +89,10 @@ def parse_bank_statement_pdf(file_bytes: bytes):
 
 
 @router.post("/upload-and-parse")
+@router.get("/ping")
+async def ping():
+    return {"message": "pong"}
+
 async def upload_and_parse(bank_statement: UploadFile = File(...)):
     try:
         if bank_statement.content_type != "application/pdf":
