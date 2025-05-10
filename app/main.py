@@ -1,8 +1,9 @@
-from app.upload_and_parse_route import router as parse_router
+from fastapi import FastAPI
+from app.routes.parse import router as parse_router
+
+app = FastAPI()
 app.include_router(parse_router)
 
-from fastapi import FastAPI
-from app.lender_match import router as lender_router
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
